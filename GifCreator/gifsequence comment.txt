@@ -1,0 +1,3 @@
+There is an error in the example provided within main() function. Comments say: // a gif sequence with the type of the first image, 1 second between frames, which loops continuously, that would be new GifSequenceWriter(output, firstImage.getType(), 1000, true) instead of new GifSequenceWriter(output, firstImage.getType(), 1, false) –  Susei Aug 14 '13 at 7:44 
+  	  	
+Also, if you find out that transparent colors are not handled properly (when you write a transparent color, a pixel from previous frame retains itself), you need to do this: find a line with graphicsControlExtensionNode.setAttribute("disposalMethod", "none"); and change "none" to "restoreToBackgroundColor"

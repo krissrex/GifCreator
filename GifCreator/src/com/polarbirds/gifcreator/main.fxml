@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.media.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="410.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.polarbirds.gifcreator.Controller">
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+  <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+   <center>
+      <Pane prefHeight="380.0" prefWidth="630.0" style="-fx-background-color: #64B4ED;" BorderPane.alignment="CENTER">
+         <children>
+            <Pane fx:id="loadPane" prefHeight="380.0" prefWidth="630.0">
+               <children>
+                  <TextField fx:id="fieldPath" layoutX="14.0" layoutY="13.0" prefHeight="25.0" prefWidth="450.0" promptText="Image folder" text="/">
+                     <effect>
+                        <Reflection />
+                     </effect>
+                  </TextField>
+                  <Button layoutX="479.0" layoutY="13.0" mnemonicParsing="false" onMouseClicked="#openBrowser" text="Browse..." />
+                  <ListView fx:id="leftList" layoutX="14.0" layoutY="101.0" onKeyPressed="#leftSelected" onMouseClicked="#leftSelected" prefHeight="240.0" prefWidth="240.0">
+                     <tooltip>
+                        <Tooltip fx:id="leftTooltip" height="300.0" text="Preview selected image" width="300.0">
+                           <graphic>
+                              <ImageView fx:id="imagePreview" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                        </Tooltip>
+                     </tooltip>
+                  </ListView>
+                  <ListView fx:id="rightList" layoutX="376.0" layoutY="101.0" prefHeight="240.0" prefWidth="240.0" />
+                  <Button fx:id="btnAdd" layoutX="270.0" layoutY="153.0" mnemonicParsing="false" onAction="#addSelection" prefHeight="25.0" prefWidth="90.0" text="Add &gt;" />
+                  <Button fx:id="btnRemove" layoutX="270.0" layoutY="196.0" mnemonicParsing="false" onAction="#removeSelection" prefHeight="25.0" prefWidth="90.0" text="&lt; Remove" />
+                  <Button fx:id="btnGenerate" disable="true" layoutX="258.0" layoutY="316.0" mnemonicParsing="false" onAction="#nextMode" text="Generate Gif..." />
+                  <Button layoutX="566.0" layoutY="13.0" mnemonicParsing="false" onMouseClicked="#loadPath" text="Load" />
+               </children>
+            </Pane>
+            <Pane fx:id="generatePane" layoutY="390.0" prefHeight="380.0" prefWidth="630.0" style="-fx-background-color: #44EE44;">
+               <children>
+                  <Pane layoutX="20.0" layoutY="14.0" style="-fx-background-color: #42ED6D;">
+                     <children>
+                        <ImageView fx:id="gifPreview" fitHeight="353.0" fitWidth="361.0" pickOnBounds="true" />
+                     </children>
+                  </Pane>
+                  <Label layoutX="463.0" layoutY="13.0" text="Order frames" />
+                  <Slider layoutX="386.0" layoutY="79.0" max="1000.0" min="1.0" prefHeight="15.0" prefWidth="233.0" value="300.0" />
+                  <Button layoutX="507.0" layoutY="261.0" mnemonicParsing="false" onAction="#saveGif" text="Save" />
+                  <Button layoutX="507.0" layoutY="328.0" mnemonicParsing="false" onAction="#prevMode" text="Back" />
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+   </center>
+   <top>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="316.0" minWidth="10.0" prefWidth="276.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="476.0" minWidth="10.0" prefWidth="354.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="GifCreator">
+               <font>
+                  <Font size="28.0" />
+               </font>
+            </Label>
+            <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="Select files" GridPane.columnIndex="1" />
+         </children>
+      </GridPane>
+   </top>
+</BorderPane>
