@@ -23,6 +23,7 @@ public class Main extends Application {
 			controller.setStage(primaryStage);
 			
 			primaryStage.setTitle("GifCreator");
+			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
