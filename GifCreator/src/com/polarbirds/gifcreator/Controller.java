@@ -80,7 +80,6 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	private String FILESELECT_LABEL = "Select files";
 	private String GENERATE_LABEL = "Adjust settings";
 	private String LOADING_LABEL = "Loading...";
-	
 
 //////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////Properties//////////////////////////////////
@@ -100,6 +99,9 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	public Controller() {
 		fm = new FileManager();
 		ic = new ImageCombiner();
+		
+		fm.addListener(this);
+		ic.addListener(this);
 	}
 	
 	/**
@@ -230,6 +232,7 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	
 	@FXML
 	public void sliderReleased (Event e) {
+		ic.setDelay((int)delaySlider.getValue());
 		ic.generate();
 	}
 	
@@ -255,15 +258,15 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	}
 
 	@Override
-	public void actionComplete(ThreadActionCompleteListener.action e) {
-		switch (e) {
+	public void actionComplete(ThreadActionCompleteListener.action action) {
+		switch (action) {
 		case FILES_LOADED:
 			loadingLabel.setText("");
 			ic.generate();
 			break;
 			
 		case GIF_GENERATED:
-			
+			gifPreview.setImage(ic.getGif());
 			break;
 			
 		default:
