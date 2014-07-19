@@ -30,7 +30,7 @@ package net.kroo.elliot;
  * Corrected spelling mistake in constructor params.
  * Changed disposal method from "none".
  * Added comment on delay-attribute.
- * 
+ * Reformatting for readability
  */
 
 import javax.imageio.*;
@@ -61,43 +61,30 @@ public class GifSequenceWriter {
       int imageType,
       int timeBetweenFramesMS,
       boolean loopContinuously) throws IIOException, IOException {
+	  
     // my method to create a writer
     gifWriter = getWriter(); 
     imageWriteParam = gifWriter.getDefaultWriteParam();
-    ImageTypeSpecifier imageTypeSpecifier =
-      ImageTypeSpecifier.createFromBufferedImageType(imageType);
+    ImageTypeSpecifier imageTypeSpecifier = ImageTypeSpecifier.createFromBufferedImageType(imageType);
 
-    imageMetaData =
-      gifWriter.getDefaultImageMetadata(imageTypeSpecifier,
-      imageWriteParam);
+    imageMetaData = gifWriter.getDefaultImageMetadata(imageTypeSpecifier, imageWriteParam);
 
     String metaFormatName = imageMetaData.getNativeMetadataFormatName();
 
-    IIOMetadataNode root = (IIOMetadataNode)
-      imageMetaData.getAsTree(metaFormatName);
+    IIOMetadataNode root = (IIOMetadataNode)imageMetaData.getAsTree(metaFormatName);
 
-    IIOMetadataNode graphicsControlExtensionNode = getNode(
-      root,
-      "GraphicControlExtension");
+    IIOMetadataNode graphicsControlExtensionNode = getNode(root, "GraphicControlExtension");
 
     graphicsControlExtensionNode.setAttribute("disposalMethod", "restoreToBackgroundColor");
     graphicsControlExtensionNode.setAttribute("userInputFlag", "FALSE");
-    graphicsControlExtensionNode.setAttribute(
-      "transparentColorFlag",
-      "FALSE");
-    graphicsControlExtensionNode.setAttribute(
-      "delayTime",
-      Integer.toString(timeBetweenFramesMS / 10)); //Time between frames in 100th of a second.
-    graphicsControlExtensionNode.setAttribute(
-      "transparentColorIndex",
-      "0");
+    graphicsControlExtensionNode.setAttribute("transparentColorFlag", "FALSE");
+    graphicsControlExtensionNode.setAttribute("delayTime", Integer.toString(timeBetweenFramesMS / 10)); //Time between frames in 100th of a second.
+    graphicsControlExtensionNode.setAttribute("transparentColorIndex", "0");
 
     IIOMetadataNode commentsNode = getNode(root, "CommentExtensions");
     commentsNode.setAttribute("CommentExtension", "Created by MAH");
 
-    IIOMetadataNode appEntensionsNode = getNode(
-      root,
-      "ApplicationExtensions");
+    IIOMetadataNode appEntensionsNode = getNode(root, "ApplicationExtensions");
 
     IIOMetadataNode child = new IIOMetadataNode("ApplicationExtension");
 
@@ -106,8 +93,11 @@ public class GifSequenceWriter {
 
     int loop = loopContinuously ? 0 : 1;
 
-    child.setUserObject(new byte[]{ 0x1, (byte) (loop & 0xFF), (byte)
-      ((loop >> 8) & 0xFF)});
+    child.setUserObject(new byte[] { 
+    			0x1, (byte) (loop & 0xFF), (byte) ((loop >> 8) & 0xFF)
+    		}); // byte is signed. x & 0xFF makes the result unsigned. Elliot does not explain why he does not just insert 0x1, 0x0 or 0x0
+    			// instead of reading the lower and upper bits of a int that only contains 1 or 0.
+    
     appEntensionsNode.appendChild(child);
 
     imageMetaData.setFromTree(metaFormatName, root);
@@ -118,12 +108,7 @@ public class GifSequenceWriter {
   }
   
   public void writeToSequence(RenderedImage img) throws IOException {
-    gifWriter.writeToSequence(
-      new IIOImage(
-        img,
-        null,
-        imageMetaData),
-      imageWriteParam);
+    gifWriter.writeToSequence( new IIOImage(img, null, imageMetaData), imageWriteParam);
   }
   
   /**
@@ -143,6 +128,7 @@ public class GifSequenceWriter {
    */
   private static ImageWriter getWriter() throws IIOException {
     Iterator<ImageWriter> iter = ImageIO.getImageWritersBySuffix("gif");
+    
     if(!iter.hasNext()) {
       throw new IIOException("No GIF Image Writers Exist");
     } else {
@@ -159,9 +145,7 @@ public class GifSequenceWriter {
    * 
    * @return the child node, if found or a new node created with the given name.
    */
-  private static IIOMetadataNode getNode(
-      IIOMetadataNode rootNode,
-      String nodeName) {
+  private static IIOMetadataNode getNode(IIOMetadataNode rootNode, String nodeName) {
     int nNodes = rootNode.getLength();
     for (int i = 0; i < nNodes; i++) {
       if (rootNode.item(i).getNodeName().compareToIgnoreCase(nodeName)
@@ -174,14 +158,7 @@ public class GifSequenceWriter {
     return(node);
   }
   
-  /**
-  public GifSequenceWriter(
-       BufferedOutputStream outputStream,
-       int imageType,
-       int timeBetweenFramesMS,
-       boolean loopContinuously) {
-   
-   */
+
 /*  
   public static void main(String[] args) throws Exception {
     if (args.length > 1) {
