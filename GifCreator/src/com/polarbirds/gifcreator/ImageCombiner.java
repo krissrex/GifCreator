@@ -37,21 +37,11 @@ public class ImageCombiner {
 	 * @return the generated gif. Returns null if none exists.
 	 */
 	public Image getGif() {
-		/*
-		//Not runnable code. Excerpt from Controller debug code to make an Image
-		// from a stream, usable in JavaFX.
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		BufferedImage img = fm.getImages()[0];
-		ImageIO.write(img, "gif", os); //"gif" might not be in imageWriters.
-				
-		Image a = new Image(new ByteArrayInputStream(os.toByteArray()));
-		 */
 		return gif;
 	}
 	
 	/**
-	 * WIP.
-	 * TODO add functionality.
+	 * Sets the images to generate the gif from. The order is important.
 	 * @param files
 	 */
 	public void setImages(BufferedImage[] images) {
@@ -67,11 +57,24 @@ public class ImageCombiner {
 	 * TODO add functionality.
 	 */
 	public void generate() {
-		if (images.size() == 0) {
+		/*if (images.size() == 0) {
 			return;
-		}
+		}*/
+		
 		//Multi thread this thing, and get the net.kroo.elliot.GifSequenceWriter to work.
 
+		
+		/*
+		//Not runnable code. Excerpt from Controller debug code to make an Image
+		// from a stream, usable in JavaFX.
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		BufferedImage img = fm.getImages()[0];
+		ImageIO.write(img, "gif", os); //"gif" might not be in imageWriters.
+				
+		Image a = new Image(new ByteArrayInputStream(os.toByteArray()));
+		 */
+		
+		
 		//On completion:
 		for (ThreadActionCompleteListener listener : listeners) {
 			listener.actionComplete(ThreadActionCompleteListener.action.GIF_GENERATED);
