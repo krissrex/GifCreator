@@ -1,7 +1,9 @@
 #Resources that may help in case you get stuck
 
 #### Gif information
-[imageio - gif metadata](http://docs.oracle.com/javase/7/docs/api/javax/imageio/metadata/doc-files/gif_metadata.html "Gif Metadata")
+[imageio - gif metadata](http://docs.oracle.com/javase/8/docs/api/javax/imageio/metadata/doc-files/gif_metadata.html "Gif Metadata")
+
+[imageio - package summary]("http://docs.oracle.com/javase/8/docs/api/javax/imageio/package-summary.html")
 
 [Netscape looping extension](http://www.vurdalakov.net/misc/gif/netscape-looping-application-extension "Netscape Looping Application Extension (GIF Unofficial Specification)")
 
