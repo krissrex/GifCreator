@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.polarbirds.gifcreator.ThreadActionEvent.Action;
+
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -165,7 +167,7 @@ public class FileManager {
 						}
 						
 						for (ThreadActionCompleteListener listener : listeners) {
-							listener.actionComplete(ThreadActionCompleteListener.action.FILES_LOADED);
+							listener.actionComplete(new ThreadActionEvent(Action.FILES_LOADED));
 						}
 					}
 				});
@@ -173,13 +175,13 @@ public class FileManager {
 		}); //Does this even work?
 		
 		//Run task
-		Thread loadThread = new Thread(loadTask);
+		Thread loadThread = new Thread(null, loadTask, "ImageLoader");
 		loadThread.setDaemon(true); //Not sure what happens on false.
 		loadThread.start();
 	}
 	
 	/**
-	 * Not implemented.
+	 * Returns the loaded images.
 	 */
 	public BufferedImage[] getImages() {
 		BufferedImage[] out = new BufferedImage[images.size()];

@@ -77,10 +77,10 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	
 	private modes mode = modes.FILESELECTION;
 	
-	private String FILESELECT_LABEL = "Select files";
-	private String GENERATE_LABEL = "Adjust settings";
-	private String LOADING_LABEL = "Loading...";
-
+	private static String FILESELECT_LABEL = "Select files";
+	private static String SETTINGS_LABEL = "Adjust settings";
+	private static String LOADING_LABEL = "Loading...";
+	private static String GENERATING_LABEL = "Generating...";
 //////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////Properties//////////////////////////////////
 //ENUMS & CLASSES
@@ -206,7 +206,7 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 				generatePane.setLayoutY(0); //It is moved to y=390 in scene builder.
 				generatePane.setVisible(true);
 				loadPane.setVisible(false);
-				title.setText(GENERATE_LABEL);
+				title.setText(SETTINGS_LABEL);
 				loadingLabel.setText(LOADING_LABEL);
 				fm.loadImages();
 				break;
@@ -257,20 +257,32 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 		}
 	}
 
+	/**
+	 * From ThreadActionCompleteListener. Gets called when a thread is done working.
+	 */
 	@Override
-	public void actionComplete(ThreadActionCompleteListener.action action) {
-		switch (action) {
+	public void actionComplete(ThreadActionEvent event) {
+		switch (event.getAction()) {
 		case FILES_LOADED:
-			loadingLabel.setText("");
+			System.out.println(""+fm.getImages().length+" files loaded.");
+			loadingLabel.setText(GENERATING_LABEL);
+			ic.setImages(fm.getImages());
 			ic.generate();
 			break;
 			
 		case GIF_GENERATED:
-			gifPreview.setImage(ic.getGif());
+			loadingLabel.setText("");
+			if (event.succeeded()) {
+				System.out.println("Gif generated.");
+				gifPreview.setImage(ic.getGif());
+			} else {
+				System.err.println("Gif generation failed.");
+
+			}
 			break;
 			
 		default:
-				break;
+			break;
 		}
 	}
 	

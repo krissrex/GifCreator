@@ -3,13 +3,17 @@ package com.polarbirds.gifcreator;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
 
-import javafx.event.Event;
+import com.polarbirds.gifcreator.ThreadActionEvent.Action;
+
+import net.kroo.elliot.GifSequenceWriter;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.image.Image;
 
 public class ImageCombiner {
@@ -57,28 +61,69 @@ public class ImageCombiner {
 	 * TODO add functionality.
 	 */
 	public void generate() {
-		/*if (images.size() == 0) {
+		if (images.size() == 0) {
+			for (ThreadActionCompleteListener listener : listeners) {
+				listener.actionComplete(new ThreadActionEvent(Action.GIF_GENERATED, false));
+			}
 			return;
-		}*/
-		
-		//Multi thread this thing, and get the net.kroo.elliot.GifSequenceWriter to work.
-
-		
-		/*
-		//Not runnable code. Excerpt from Controller debug code to make an Image
-		// from a stream, usable in JavaFX.
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		BufferedImage img = fm.getImages()[0];
-		ImageIO.write(img, "gif", os); //"gif" might not be in imageWriters.
-				
-		Image a = new Image(new ByteArrayInputStream(os.toByteArray()));
-		 */
-		
-		
-		//On completion:
-		for (ThreadActionCompleteListener listener : listeners) {
-			listener.actionComplete(ThreadActionCompleteListener.action.GIF_GENERATED);
 		}
+		Task<Void> generateTask = new Task<Void>() {
+
+			@Override
+			protected Void call() throws Exception {
+				boolean success = true;
+				//Multi thread this thing, and get the net.kroo.elliot.GifSequenceWriter to work.
+
+
+			      BufferedImage firstImage = images.get(0);
+
+			      // create a new BufferedOutputStream with the last argument
+			      ImageOutputStream output;
+			      ByteArrayOutputStream byteArrayOs = new ByteArrayOutputStream();
+			      
+				try {
+					output = ImageIO.createImageOutputStream(byteArrayOs);
+				
+			      
+				      // create a gif sequence with the type of the first image, 1 second
+				      // between frames, which loops continuously
+				      GifSequenceWriter writer = new GifSequenceWriter(output,
+				    		  firstImage.getType(), 100, true);
+				      
+				      // write out the images to the sequence...
+				      for(BufferedImage image : images) {
+				        writer.writeToSequence(image);
+				      }
+				      
+				      writer.close();
+				      output.close();
+				      
+				      gif = new Image(new ByteArrayInputStream(byteArrayOs.toByteArray()));
+				      
+				} catch (Exception e) {
+					e.printStackTrace();
+					success = false;
+				} finally {
+					//Notify about completion.
+					final boolean succeeded = success;
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							for (ThreadActionCompleteListener listener : listeners) {
+								listener.actionComplete(new ThreadActionEvent(Action.GIF_GENERATED, succeeded));
+							}
+						}
+					});
+				}
+				return null;
+			}
+			
+		};
+		
+		Thread th = new Thread(null, generateTask, "GenerateThread");
+		th.setDaemon(true);
+		th.start();
+		
 	}
 	
 	public void setDelay(int delay) {

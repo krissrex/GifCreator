@@ -10,6 +10,7 @@ package net.kroo.elliot;
 // http://creativecommons.org/licenses/by/3.0/ or send a letter to Creative
 // Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
 
+
 //CC 3.0 summarized: indicate if changes are made, credit author.
 /*
 	You are free to:
@@ -26,11 +27,14 @@ package net.kroo.elliot;
  */
 
 /*
+ * http://elliot.kroo.net/software/java/GifSequenceWriter/
+ * 
  * Changes:
  * Corrected spelling mistake in constructor params.
  * Changed disposal method from "none".
  * Added comment on delay-attribute.
  * Reformatting for readability
+ * Changed metadata comment
  */
 
 import javax.imageio.*;
@@ -82,7 +86,7 @@ public class GifSequenceWriter {
     graphicsControlExtensionNode.setAttribute("transparentColorIndex", "0");
 
     IIOMetadataNode commentsNode = getNode(root, "CommentExtensions");
-    commentsNode.setAttribute("CommentExtension", "Created by MAH");
+    commentsNode.setAttribute("CommentExtension", "Generated with https://github.com/krissrex/GifCreator");
 
     IIOMetadataNode appEntensionsNode = getNode(root, "ApplicationExtensions");
 
@@ -103,7 +107,6 @@ public class GifSequenceWriter {
     imageMetaData.setFromTree(metaFormatName, root);
 
     gifWriter.setOutput(outputStream);
-
     gifWriter.prepareWriteSequence(null);
   }
   
