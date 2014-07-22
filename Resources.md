@@ -3,7 +3,7 @@
 #### Gif information
 [imageio - gif metadata](http://docs.oracle.com/javase/8/docs/api/javax/imageio/metadata/doc-files/gif_metadata.html "Gif Metadata")
 
-[imageio - package summary]("http://docs.oracle.com/javase/8/docs/api/javax/imageio/package-summary.html")
+[imageio - package summary](http://docs.oracle.com/javase/8/docs/api/javax/imageio/package-summary.html "Package Summary")
 
 [Netscape looping extension](http://www.vurdalakov.net/misc/gif/netscape-looping-application-extension "Netscape Looping Application Extension (GIF Unofficial Specification)")
 
