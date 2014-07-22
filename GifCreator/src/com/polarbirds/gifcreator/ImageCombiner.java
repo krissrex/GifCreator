@@ -1,6 +1,7 @@
 package com.polarbirds.gifcreator;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class ImageCombiner {
 	private List<ThreadActionCompleteListener> listeners;
 	private Image gif;
 	private List<BufferedImage> images;
+	private byte[] gifBytes;
 	
 	private int delay = 1;
 	
@@ -44,6 +46,9 @@ public class ImageCombiner {
 		return gif;
 	}
 	
+	public byte[] getByteArray() {
+		return gifBytes;
+	}
 	/**
 	 * Sets the images to generate the gif from. The order is important.
 	 * @param files
@@ -88,7 +93,7 @@ public class ImageCombiner {
 				      // create a gif sequence with the type of the first image, 1 second
 				      // between frames, which loops continuously
 				      GifSequenceWriter writer = new GifSequenceWriter(output,
-				    		  firstImage.getType(), 100, true);
+				    		  firstImage.getType(), delay, true);
 				      
 				      // write out the images to the sequence...
 				      for(BufferedImage image : images) {
@@ -97,8 +102,8 @@ public class ImageCombiner {
 				      
 				      writer.close();
 				      output.close();
-				      
-				      gif = new Image(new ByteArrayInputStream(byteArrayOs.toByteArray()));
+				      gifBytes = byteArrayOs.toByteArray();
+				      gif = new Image(new ByteArrayInputStream(gifBytes));
 				      
 				} catch (Exception e) {
 					e.printStackTrace();

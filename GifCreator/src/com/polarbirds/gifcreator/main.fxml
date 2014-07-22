@@ -23,7 +23,7 @@
             <Pane fx:id="loadPane" prefHeight="380.0" prefWidth="697.0">
                <children>
                   <TextField fx:id="fieldPath" layoutX="14.0" layoutY="13.0" prefHeight="25.0" prefWidth="512.0" promptText="Image folder" text="/" />
-                  <Button layoutX="546.0" layoutY="13.0" mnemonicParsing="false" onMouseClicked="#openBrowser" text="Browse..." />
+                  <Button layoutX="546.0" layoutY="13.0" mnemonicParsing="false" onAction="#openBrowser" text="Browse..." />
                   <ListView fx:id="leftList" layoutX="14.0" layoutY="101.0" onKeyPressed="#leftSelected" onMouseClicked="#leftSelected" prefHeight="240.0" prefWidth="240.0">
                      <tooltip>
                         <Tooltip fx:id="leftTooltip" height="300.0" text="Preview selected image" width="300.0">
@@ -37,7 +37,7 @@
                   <Button fx:id="btnAdd" layoutX="270.0" layoutY="153.0" mnemonicParsing="false" onAction="#addSelection" prefHeight="25.0" prefWidth="90.0" text="Add &gt;" />
                   <Button fx:id="btnRemove" layoutX="270.0" layoutY="196.0" mnemonicParsing="false" onAction="#removeSelection" prefHeight="25.0" prefWidth="90.0" text="&lt; Remove" />
                   <Button fx:id="btnGenerate" disable="true" layoutX="258.0" layoutY="316.0" mnemonicParsing="false" onAction="#nextMode" text="Generate Gif..." />
-                  <Button layoutX="633.0" layoutY="13.0" mnemonicParsing="false" onMouseClicked="#loadPath" text="Load" />
+                  <Button layoutX="633.0" layoutY="13.0" mnemonicParsing="false" onAction="#loadPath" text="Load" />
                   <Button layoutX="628.0" layoutY="153.0" mnemonicParsing="false" onAction="#moveUp" prefHeight="25.0" prefWidth="55.0" text="Up" />
                   <Button layoutX="628.0" layoutY="196.0" mnemonicParsing="false" onAction="#moveDown" prefHeight="25.0" prefWidth="55.0" text="Down" />
                </children>
@@ -55,7 +55,7 @@
                      </children>
                   </Pane>
                   <Label layoutX="463.0" layoutY="13.0" text="Set the delay" />
-                  <Slider fx:id="delaySlider" blockIncrement="5.0" layoutX="386.0" layoutY="79.0" majorTickUnit="100.0" max="1000.0" min="1.0" minorTickCount="1" onMouseDragReleased="#sliderReleased" prefHeight="22.0" prefWidth="239.0" showTickMarks="true" value="300.0" />
+                  <Slider fx:id="delaySlider" blockIncrement="5.0" layoutX="386.0" layoutY="79.0" majorTickUnit="100.0" max="1000.0" min="1.0" minorTickCount="1" onMouseReleased="#sliderReleased" prefHeight="22.0" prefWidth="239.0" showTickMarks="true" value="60.0" />
                   <Button layoutX="507.0" layoutY="262.0" mnemonicParsing="false" onAction="#saveGif" text="Save..." />
                   <Button layoutX="443.0" layoutY="262.0" mnemonicParsing="false" onAction="#prevMode" text="Back" />
                   <TextField fx:id="delayField" layoutX="389.0" layoutY="110.0" prefHeight="25.0" prefWidth="153.0" />

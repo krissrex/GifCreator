@@ -1,12 +1,18 @@
 package com.polarbirds.gifcreator;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
 
 import com.polarbirds.gifcreator.ThreadActionEvent.Action;
 
@@ -199,5 +205,24 @@ public class FileManager {
 	
 	public void removeListener(ThreadActionCompleteListener listener) {
 		listeners.remove(listener);
+	}
+	
+	public void saveGif(byte[] imageByteArray, File file) {
+		ImageOutputStream a;
+		
+		
+		try {
+			System.out.println("Writing gif...");
+			a = ImageIO.createImageOutputStream(new FileOutputStream(file));
+			a.write(imageByteArray);
+			System.out.println("Done writing gif. Stream pos: "+a.getStreamPosition());
+			a.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 }

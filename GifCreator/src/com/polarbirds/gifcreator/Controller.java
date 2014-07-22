@@ -20,6 +20,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 public class Controller implements Initializable, ThreadActionCompleteListener {
@@ -113,6 +115,7 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 		fm.setAllFilesList(leftList.getItems());
 		fm.setSelectedFilesList(rightList.getItems());	
 		
+		delaySliderChanged();
 		delaySlider.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
@@ -121,6 +124,7 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 				delaySliderChanged();				
 			}
 		});
+		
 	}
 	
 	public void setStage(Stage stage) {
@@ -132,10 +136,17 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 //EVENT HANDLERS
 	
 	@FXML
-	public void openBrowser(Event e) {
+	public void openBrowser(Event event) {
 		DirectoryChooser chooser = new DirectoryChooser();
 		if (fieldPath.getText() != null && !fieldPath.getText().equals("")) {
-			chooser.setInitialDirectory(new File(fieldPath.getText()));
+			try {
+				File file = new File(fieldPath.getText());
+				if (file.isDirectory()) {
+					chooser.setInitialDirectory(file);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		chooser.setTitle("Choose the folder containing your images");
 		File dir = chooser.showDialog(stage);
@@ -148,11 +159,17 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	}
 	
 	@FXML
-	public void loadPath (Event e) {
-		if (fm.getPath() != null) {
-			fm.loadPath();
-		} else {
-			fieldPath.requestFocus();
+	public void loadPath (Event event) {
+		try {
+			fm.setPath(new File(fieldPath.getText()));
+			
+			if (fm.getPath() != null) {
+				fm.loadPath();
+			} else {
+				fieldPath.requestFocus();
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -232,14 +249,28 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	
 	@FXML
 	public void sliderReleased (Event e) {
-		ic.setDelay((int)delaySlider.getValue());
+		System.out.println("Slider released. Generating gif...");
+		loadingLabel.setText(GENERATING_LABEL);
+		delaySliderChanged();
 		ic.generate();
 	}
 	
 	@FXML
 	public void saveGif (Event e) {
-		//TODO WIP
+		FileChooser chooser = new FileChooser();
+		if (fieldPath.getText() != null && !fieldPath.getText().equals("")) {
+			chooser.setInitialDirectory(new File(fieldPath.getText()));
+		}
+		
+		chooser.setTitle("Save the gif...");
+		chooser.getExtensionFilters().setAll(new ExtensionFilter("Gif", "gif"));
+		File file = chooser.showSaveDialog(stage);
+		if (!file.getName().endsWith(".gif")) {
+			file = new File(file.getPath()+".gif");
+		}
+		fm.saveGif(ic.getByteArray(), file);
 	}
+	
 //////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////Methods/////////////////////////////////////
 //UTILITY
@@ -247,6 +278,7 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	public void delaySliderChanged() {
 		delayField.setText(
 					String.format("%.2f", delaySlider.getValue()/100)); //2 decimals, display seconds.
+		ic.setDelay((int)delaySlider.getValue()*10);
 	}
 	
 	public void toggleGenerateButton() {
