@@ -16,6 +16,7 @@ import javax.imageio.stream.ImageOutputStream;
 import com.polarbirds.gifcreator.ThreadActionEvent.Action;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker.State;
@@ -42,6 +43,9 @@ public class FileManager {
 		listeners = new ArrayList<ThreadActionCompleteListener>();
 		images = new ArrayList<BufferedImage>();
 		loaders = new ArrayList<Task<Void>>();
+		
+		allFiles = FXCollections.observableArrayList();
+		selectedFiles = FXCollections.observableArrayList();
 	}
 	
 	public void setPath(File path) {
@@ -52,12 +56,12 @@ public class FileManager {
 		return path; 
 	}
 	
-	public void setAllFilesList(ObservableList<File> list) {
-		allFiles = list;
+	public ObservableList<File> getAllFilesList() {
+		return allFiles;
 	}
 	
-	public void setSelectedFilesList(ObservableList<File> list) {
-		selectedFiles = list;
+	public ObservableList<File> getSelectedFilesList() {
+		return selectedFiles;
 	}
 	
 	public void selectFile(int index) {
