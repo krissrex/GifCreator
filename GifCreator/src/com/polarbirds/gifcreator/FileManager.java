@@ -174,19 +174,14 @@ public class FileManager {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						images.clear();
-						for (BufferedImage image : temp) {
-							images.add(image);
-						}
-						
-						for (ThreadActionCompleteListener listener : listeners) {
-							listener.actionComplete(new ThreadActionEvent(Action.FILES_LOADED));
-						}
-					}
-				});
+				images.clear();
+				for (BufferedImage image : temp) {
+					images.add(image);
+				}
+				
+				for (ThreadActionCompleteListener listener : listeners) {
+					listener.actionComplete(new ThreadActionEvent(Action.FILES_LOADED));
+				}
 			}
 		});
 		
@@ -199,7 +194,7 @@ public class FileManager {
 	}
 	
 	/**
-	 * Untested.
+	 * Cancels the loading thread.
 	 */
 	public void cancelLoading() {
 		Iterator<Task<Void>> iter = loaders.iterator();
