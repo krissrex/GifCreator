@@ -238,6 +238,7 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 		switch(mode) {
 			case GENERATING:
 				mode = modes.FILESELECTION;
+				fm.cancelLoading();
 				generatePane.setVisible(false);
 				loadPane.setVisible(true);
 				title.setText(FILESELECT_LABEL);

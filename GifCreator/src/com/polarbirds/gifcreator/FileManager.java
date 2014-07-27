@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -17,6 +18,7 @@ import com.polarbirds.gifcreator.ThreadActionEvent.Action;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.concurrent.Worker.State;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 
@@ -34,11 +36,12 @@ public class FileManager {
 	private ObservableList<File> selectedFiles;
 	
 	private final List<ThreadActionCompleteListener> listeners;
-
+	private List<Task<Void>> loaders;
 	
 	public FileManager() {
 		listeners = new ArrayList<ThreadActionCompleteListener>();
 		images = new ArrayList<BufferedImage>();
+		loaders = new ArrayList<Task<Void>>();
 	}
 	
 	public void setPath(File path) {
@@ -129,10 +132,15 @@ public class FileManager {
 	public void loadImages() {
 		//Make sure the loader does not rely on a mutable array.
 		final File[] files = new File[selectedFiles.size()];
+		
 		for (int i = 0; i < selectedFiles.size(); i++) {
 			files[i] = new File(selectedFiles.get(i).getPath());
 		}
 		final BufferedImage[] temp = new BufferedImage[files.length];
+		
+		///////////////////////////////////////////7
+		
+		
 		
 		//Create task
 		Task<Void> loadTask = new Task<Void>() {
@@ -140,18 +148,22 @@ public class FileManager {
 			@Override
 			protected Void call() throws Exception {
 				int i = 0;
-				//TODO implement a way to cancel.
+				
 				for (File image : files) {
 					try {
 						// Possible optimization: load images into a map using path as key. avoids duplicates. Assign key to various indexes
 						// in a string array. When adding images from the map to the ArrayList later, use the same BufferedImage references where
 						// duplicates occur.
+						if (isCancelled()) {
+							return null;
+						}
 						temp[i] = ImageIO.read(image);
 					} catch (Exception e) {}
 					finally {
 						i++;
 					}
 				}
+				
 				return null;
 			}
 		}; 
@@ -176,13 +188,32 @@ public class FileManager {
 					}
 				});
 			}
-		}); //Does this even work?
+		});
+		
+		loaders.add(loadTask);
 		
 		//Run task
 		Thread loadThread = new Thread(null, loadTask, "ImageLoader");
 		loadThread.setDaemon(true); //Not sure what happens on false.
 		loadThread.start();
 	}
+	
+	/**
+	 * Untested.
+	 */
+	public void cancelLoading() {
+		Iterator<Task<Void>> iter = loaders.iterator();
+		while (iter.hasNext()) {
+			Task<Void> loader = iter.next();
+			if (loader == null || loader.getState() == State.CANCELLED || 
+					loader.getState() == State.FAILED || loader.getState() == State.SUCCEEDED){
+				iter.remove();
+			} else {
+				loader.cancel();
+			}
+		}
+	}
+	
 	
 	/**
 	 * Returns the loaded images.
