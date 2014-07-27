@@ -15,7 +15,6 @@ import javax.imageio.stream.ImageOutputStream;
 
 import com.polarbirds.gifcreator.ThreadActionEvent.Action;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
