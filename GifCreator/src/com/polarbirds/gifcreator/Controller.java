@@ -239,6 +239,7 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 			case GENERATING:
 				mode = modes.FILESELECTION;
 				fm.cancelLoading();
+				ic.cancelGeneration();
 				generatePane.setVisible(false);
 				loadPane.setVisible(true);
 				title.setText(FILESELECT_LABEL);

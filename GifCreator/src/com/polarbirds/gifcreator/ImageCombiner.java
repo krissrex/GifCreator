@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -14,19 +15,26 @@ import com.polarbirds.gifcreator.ThreadActionEvent.Action;
 import net.kroo.elliot.GifSequenceWriter;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.concurrent.Worker.State;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 
 public class ImageCombiner {
-	private List<ThreadActionCompleteListener> listeners;
+	
 	private Image gif;
 	private List<BufferedImage> images;
 	private byte[] gifBytes;
 	
 	private int delay = 1;
 	
+	private List<ThreadActionCompleteListener> listeners;
+	private List<Task<Void>> generators;
+
 	public ImageCombiner() {
 		listeners = new ArrayList<ThreadActionCompleteListener>();
 		images = new ArrayList<BufferedImage>();
+		generators = new ArrayList<Task<Void>>();
 	}
 	
 	public void addListener(ThreadActionCompleteListener listener) {
@@ -61,33 +69,30 @@ public class ImageCombiner {
 	
 	
 	/**
-	 * WIP.
-	 * TODO add functionality.
+	 * Start a thread generating the gif.
 	 */
 	public void generate() {
 		if (images.size() == 0) {
+			gif = null;
 			for (ThreadActionCompleteListener listener : listeners) {
 				listener.actionComplete(new ThreadActionEvent(Action.GIF_GENERATED, false));
 			}
 			return;
 		}
+		
+		
 		Task<Void> generateTask = new Task<Void>() {
 
 			@Override
 			protected Void call() throws Exception {
-				boolean success = true;
-				//Multi thread this thing, and get the net.kroo.elliot.GifSequenceWriter to work.
-
 
 			      BufferedImage firstImage = images.get(0);
 
-			      // create a new BufferedOutputStream with the last argument
 			      ImageOutputStream output;
 			      ByteArrayOutputStream byteArrayOs = new ByteArrayOutputStream();
 			      
 				try {
 					output = ImageIO.createImageOutputStream(byteArrayOs);
-				
 			      
 				      // create a gif sequence with the type of the first image, 1 second
 				      // between frames, which loops continuously
@@ -96,6 +101,13 @@ public class ImageCombiner {
 				      
 				      // write out the images to the sequence...
 				      for(BufferedImage image : images) {
+				    	  if (isCancelled()) {
+				    		  writer.close();
+				    		  output.close();
+				    		  gifBytes = null;
+				    		  gif = null;
+				    		  return null;
+				    	  }
 				        writer.writeToSequence(image);
 				      }
 				      
@@ -106,28 +118,42 @@ public class ImageCombiner {
 				      
 				} catch (Exception e) {
 					e.printStackTrace();
-					success = false;
-				} finally {
-					//Notify about completion.
-					final boolean succeeded = success;
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							for (ThreadActionCompleteListener listener : listeners) {
-								listener.actionComplete(new ThreadActionEvent(Action.GIF_GENERATED, succeeded));
-							}
-						}
-					});
 				}
+				
 				return null;
 			}
 			
 		};
 		
+		generateTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+			@Override
+			public void handle(WorkerStateEvent event) {
+				for (ThreadActionCompleteListener listener : listeners) {
+					listener.actionComplete(new ThreadActionEvent(Action.GIF_GENERATED, true));
+				}
+			}
+		});
+		
+		generators.add(generateTask);
+		
+		//Run task
 		Thread th = new Thread(null, generateTask, "GenerateThread");
 		th.setDaemon(true);
 		th.start();
-		
+	}
+
+	public void cancelGeneration() {
+		Iterator<Task<Void>> iter = generators.iterator();
+		while (iter.hasNext()) {
+			Task<Void> generator = iter.next();
+			if (generator == null || generator.getState() == State.CANCELLED || 
+					generator.getState() == State.FAILED || generator.getState() == State.SUCCEEDED){
+				iter.remove();
+			} else {
+				generator.cancel();
+			}
+		}
 	}
 	
 	public void setDelay(int delay) {
