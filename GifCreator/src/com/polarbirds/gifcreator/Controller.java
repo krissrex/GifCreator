@@ -254,6 +254,7 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 		System.out.println("Slider released. Generating gif...");
 		loadingLabel.setText(GENERATING_LABEL);
 		delaySliderChanged();
+		ic.cancelGeneration();
 		ic.generate();
 	}
 	
