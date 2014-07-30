@@ -2,12 +2,14 @@ package com.polarbirds.gifcreator;
 
 import java.io.File;
 import java.net.URL;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -23,6 +25,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class Controller implements Initializable, ThreadActionCompleteListener {
 	
@@ -52,10 +55,6 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	private Label loadingLabel;
 	
 	@FXML
-	private Button btnAdd; //FIXME Not needed
-	@FXML
-	private Button btnRemove; //FIXME Not needed
-	@FXML
 	private Button btnGenerate;
 
 	
@@ -79,10 +78,12 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	
 	private modes mode = modes.FILESELECTION;
 	
-	private static String FILESELECT_LABEL = "Select files";
-	private static String SETTINGS_LABEL = "Adjust settings";
-	private static String LOADING_LABEL = "Loading...";
-	private static String GENERATING_LABEL = "Generating...";
+	private ResourceBundle resources;
+	
+	private String FILESELECT_LABEL = "Select files";
+	private String SETTINGS_LABEL = "Adjust settings";
+	private String LOADING_LABEL = "Loading...";
+	private String GENERATING_LABEL = "Generating...";
 //////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////Properties//////////////////////////////////
 //ENUMS & CLASSES
@@ -112,9 +113,19 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		fm.setAllFilesList(leftList.getItems());
-		fm.setSelectedFilesList(rightList.getItems());	
+		this.resources = resources;
+		setLocalizedStrings();
 		
+		leftList.setItems(fm.getAllFilesList());
+		rightList.setItems(fm.getSelectedFilesList());
+		
+		leftList.setCellFactory(new Callback<ListView<File>, ListCell<File>>() {
+			
+			@Override
+			public ListCell<File> call(ListView<File> param) {
+				return new FileNameCell();
+			}
+		});
 		delaySliderChanged();
 		delaySlider.valueProperty().addListener(new ChangeListener<Number>() {
 
@@ -321,4 +332,37 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 		}
 	}
 	
+	/**
+	 * Loads strings from <code>resources</code> and saves it to private strings.
+	 * If a value can't be loaded from <code>resources</code>, the private string keeps the default value.
+	 */
+	private void setLocalizedStrings() {
+		if (resources == null) {
+			return;
+		}
+		
+		String tmp;
+		try {
+			tmp =  resources.getString("LbFileSelect");
+			FILESELECT_LABEL = tmp;
+		}
+		catch (MissingResourceException | ClassCastException e) {}
+		
+		try {
+			tmp =  resources.getString("LbSettings");
+			SETTINGS_LABEL = tmp;
+		}
+		catch (MissingResourceException | ClassCastException e) {}
+		try {
+			tmp =  resources.getString("LbGenerating");
+			GENERATING_LABEL = tmp;
+		}
+		catch (MissingResourceException | ClassCastException e) {}
+		try {
+			tmp =  resources.getString("LbLoading");
+			LOADING_LABEL = tmp;
+		}
+		catch (MissingResourceException | ClassCastException e) {}
+		
+	}
 } //End of Controller class
