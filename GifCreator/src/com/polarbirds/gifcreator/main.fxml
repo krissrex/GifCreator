@@ -34,8 +34,8 @@
                      </tooltip>
                   </ListView>
                   <ListView fx:id="rightList" layoutX="376.0" layoutY="101.0" prefHeight="240.0" prefWidth="240.0" />
-                  <Button fx:id="btnAdd" layoutX="270.0" layoutY="153.0" mnemonicParsing="false" onAction="#addSelection" prefHeight="25.0" prefWidth="90.0" text="Add &gt;" />
-                  <Button fx:id="btnRemove" layoutX="270.0" layoutY="196.0" mnemonicParsing="false" onAction="#removeSelection" prefHeight="25.0" prefWidth="90.0" text="&lt; Remove" />
+                  <Button layoutX="270.0" layoutY="153.0" mnemonicParsing="false" onAction="#addSelection" prefHeight="25.0" prefWidth="90.0" text="Add &gt;" />
+                  <Button layoutX="270.0" layoutY="196.0" mnemonicParsing="false" onAction="#removeSelection" prefHeight="25.0" prefWidth="90.0" text="&lt; Remove" />
                   <Button fx:id="btnGenerate" disable="true" layoutX="258.0" layoutY="316.0" mnemonicParsing="false" onAction="#nextMode" text="Generate Gif..." />
                   <Button layoutX="633.0" layoutY="13.0" mnemonicParsing="false" onAction="#loadPath" text="Load" />
                   <Button layoutX="628.0" layoutY="153.0" mnemonicParsing="false" onAction="#moveUp" prefHeight="25.0" prefWidth="55.0" text="Up" />

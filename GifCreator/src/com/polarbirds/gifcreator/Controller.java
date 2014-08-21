@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -67,7 +68,8 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	private ImageView imagePreview;
 	@FXML
 	private ImageView gifPreview;
-	
+	@FXML
+	private Pagination imagePagination;
 //////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////Properties//////////////////////////////////
 //GENERAL PROPERTIES
@@ -84,6 +86,7 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	private String SETTINGS_LABEL = "Adjust settings";
 	private String LOADING_LABEL = "Loading...";
 	private String GENERATING_LABEL = "Generating...";
+	private String FOLDER_CHOOSER_DIALOG_TITLE = "Choose the folder containing your images";
 //////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////Properties//////////////////////////////////
 //ENUMS & CLASSES
@@ -126,6 +129,7 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 				return new FileNameCell();
 			}
 		});
+		
 		delaySliderChanged();
 		delaySlider.valueProperty().addListener(new ChangeListener<Number>() {
 
@@ -159,7 +163,7 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 				e.printStackTrace();
 			}
 		}
-		chooser.setTitle("Choose the folder containing your images");
+		chooser.setTitle(FOLDER_CHOOSER_DIALOG_TITLE);
 		File dir = chooser.showDialog(stage);
 		
 		if (dir != null) {
@@ -208,6 +212,16 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 	}
 	
 	@FXML
+	public void addAll(Event e) {
+		fm.addAll();
+	}
+	
+	@FXML
+	public void removeAll(Event e) {
+		fm.clear();
+	}
+	
+	@FXML
 	public void moveUp (Event e) {
 		int selected = rightList.getSelectionModel().getSelectedIndex();
 		boolean succeeded = fm.moveSelectionUp(selected);
@@ -223,6 +237,16 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 		if (succeeded) {
 			rightList.getSelectionModel().select(selected+1);
 		}
+	}
+	
+	@FXML
+	public void sortAsc(Event e) {
+		fm.sort(true);
+	}
+	
+	@FXML
+	public void sortDesc(Event e) {
+		fm.sort(false);
 	}
 	
 	@FXML
@@ -361,6 +385,11 @@ public class Controller implements Initializable, ThreadActionCompleteListener {
 		try {
 			tmp =  resources.getString("LbLoading");
 			LOADING_LABEL = tmp;
+		}
+		catch (MissingResourceException | ClassCastException e) {}
+		try {
+			tmp =  resources.getString("MFolderChooserDialogTitle");
+			FOLDER_CHOOSER_DIALOG_TITLE = tmp;
 		}
 		catch (MissingResourceException | ClassCastException e) {}
 		

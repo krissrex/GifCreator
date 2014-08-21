@@ -1,9 +1,12 @@
 package com.polarbirds.gifcreator;
 	
+import java.util.Locale;
+import java.util.PropertyResourceBundle;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.fxml.FXMLLoader;
 
 
@@ -13,8 +16,13 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			//In order to get the controller, the static FXMLLoader may not be used.
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("main.fxml"));
-			BorderPane root = (BorderPane)loader.load();
+			FXMLLoader loader = new FXMLLoader();
+			
+//			loader.setLocation(getClass().getResource("main.fxml")); //Uncomment this, and comment the next line to swap UI.
+			loader.setLocation(getClass().getResource("/res/gui.fxml")); //Rework of main.fxml. WIP. Enables internationalization.
+			loader.setResources(PropertyResourceBundle.getBundle("locale.TextBundle", Locale.getDefault()));
+			
+			Pane root = (Pane)loader.load();
 			
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());

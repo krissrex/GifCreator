@@ -7,8 +7,12 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
@@ -31,7 +35,7 @@ public class FileManager {
 	
 	private File path;
 	private final List<BufferedImage> images;
-	
+	private final Map<File, AnimationFrame> imagesMap;
 	private ObservableList<File> allFiles;
 	private ObservableList<File> selectedFiles;
 	
@@ -41,6 +45,7 @@ public class FileManager {
 	public FileManager() {
 		listeners = new ArrayList<ThreadActionCompleteListener>();
 		images = new ArrayList<BufferedImage>();
+		imagesMap = new HashMap<File, AnimationFrame>();
 		loaders = new ArrayList<Task<Void>>();
 		
 		allFiles = FXCollections.observableArrayList();
@@ -78,6 +83,14 @@ public class FileManager {
 		}
 	}
 	
+	public void clear() {
+		selectedFiles.clear();
+	}
+	
+	public void addAll() {
+		selectedFiles.addAll(allFiles);
+	}
+	
 	/**
 	 * @param index of the file to move.
 	 * @return true if the file was moved, false otherwise.
@@ -106,6 +119,19 @@ public class FileManager {
 			return true;
 		}
 		return false;
+	}
+	
+	public void sort(boolean ascending) {
+		FXCollections.sort(selectedFiles, new  Comparator<File>() {
+
+			@Override
+			public int compare(File o1, File o2) {
+				int order = ascending? 1 : -1;
+				
+				return order * o1.getName().compareTo(o2.getName());
+			}
+			
+		});
 	}
 	
 	public void loadPath() {
@@ -160,7 +186,10 @@ public class FileManager {
 						if (isCancelled()) {
 							return null;
 						}
-						temp[i] = ImageIO.read(image);
+						if (!imagesMap.containsKey(image)) {
+							temp[i] = ImageIO.read(image);
+							imagesMap.put(image, new AnimationFrame(temp[i]));
+						}
 					} catch (Exception e) {}
 					finally {
 						i++;
@@ -180,6 +209,19 @@ public class FileManager {
 				images.clear();
 				for (BufferedImage image : temp) {
 					images.add(image);
+				}
+				
+				//Don't store more than 15 spare images.
+				int sizeLimit = 15+images.size();
+				
+				if (imagesMap.size() > sizeLimit) {
+					Set<File> keys = imagesMap.keySet();
+					keys.removeAll(selectedFiles);
+					
+					Iterator<File> iter = keys.iterator();
+					while(iter.hasNext() && imagesMap.size() > sizeLimit) {
+						imagesMap.remove(iter.next());
+					}
 				}
 				
 				for (ThreadActionCompleteListener listener : listeners) {
@@ -224,6 +266,16 @@ public class FileManager {
 			i++;
 		}
 		return out;
+	}
+	
+	public AnimationFrame[] getFrames() {
+		AnimationFrame[] frame = new AnimationFrame[selectedFiles.size()];
+		int i = 0;
+		for (File key : selectedFiles) {
+			frame[i] = imagesMap.get(key);
+			i++;
+		}
+		return frame;
 	}
 	
 	public void addListener(ThreadActionCompleteListener listener) {
