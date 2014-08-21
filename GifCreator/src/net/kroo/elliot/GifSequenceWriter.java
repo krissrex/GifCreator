@@ -76,7 +76,7 @@ public class GifSequenceWriter {
     String metaFormatName = imageMetaData.getNativeMetadataFormatName();
 
     IIOMetadataNode root = (IIOMetadataNode)imageMetaData.getAsTree(metaFormatName);
-
+   
     IIOMetadataNode graphicsControlExtensionNode = getNode(root, "GraphicControlExtension");
 
     graphicsControlExtensionNode.setAttribute("disposalMethod", "restoreToBackgroundColor");
@@ -105,7 +105,7 @@ public class GifSequenceWriter {
     appEntensionsNode.appendChild(child);
 
     imageMetaData.setFromTree(metaFormatName, root);
-
+    
     gifWriter.setOutput(outputStream);
     gifWriter.prepareWriteSequence(null);
   }
