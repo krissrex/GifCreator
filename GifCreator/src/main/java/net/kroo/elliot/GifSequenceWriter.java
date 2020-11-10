@@ -88,10 +88,8 @@ public class GifSequenceWriter {
     IIOMetadataNode commentsNode = getNode(root, "CommentExtensions");
     commentsNode.setAttribute("CommentExtension", "Generated with https://github.com/krissrex/GifCreator");
 
-    IIOMetadataNode appEntensionsNode = getNode(root, "ApplicationExtensions");
-
+    IIOMetadataNode appExtensionsNode = getNode(root, "ApplicationExtensions");
     IIOMetadataNode child = new IIOMetadataNode("ApplicationExtension");
-
     child.setAttribute("applicationID", "NETSCAPE");
     child.setAttribute("authenticationCode", "2.0");
 
@@ -102,7 +100,7 @@ public class GifSequenceWriter {
     		}); // byte is signed. x & 0xFF makes the result unsigned. Elliot does not explain why he does not just insert 0x1, 0x0 or 0x0
     			// instead of reading the lower and upper bits of a int that only contains 1 or 0.
     
-    appEntensionsNode.appendChild(child);
+    appExtensionsNode.appendChild(child);
 
     imageMetaData.setFromTree(metaFormatName, root);
     
