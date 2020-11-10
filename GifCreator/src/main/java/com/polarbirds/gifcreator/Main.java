@@ -18,14 +18,14 @@ public class Main extends Application {
 			//In order to get the controller, the static FXMLLoader may not be used.
 			FXMLLoader loader = new FXMLLoader();
 			
-//			loader.setLocation(getClass().getResource("main.fxml")); //Uncomment this, and comment the next line to swap UI.
-			loader.setLocation(getClass().getResource("/res/gui.fxml")); //Rework of main.fxml. WIP. Enables internationalization.
+			loader.setLocation(getClass().getResource("/res/main.fxml")); //Uncomment this, and comment the next line to swap UI.
+//			loader.setLocation(getClass().getResource("/res/gui.fxml")); //Rework of main.fxml. WIP. Enables internationalization.
 			loader.setResources(PropertyResourceBundle.getBundle("locale.TextBundle", Locale.getDefault()));
 			
 			Pane root = (Pane)loader.load();
 			
 			Scene scene = new Scene(root);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			scene.getStylesheets().add(getClass().getResource("/res/application.css").toExternalForm());
 			
 			Controller controller = loader.<Controller>getController();
 			controller.setStage(primaryStage);
