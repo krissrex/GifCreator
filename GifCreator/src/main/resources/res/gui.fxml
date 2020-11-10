@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.layout.*?>
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="640.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.polarbirds.gifcreator.Controller">
+<AnchorPane prefHeight="640.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.polarbirds.gifcreator.Controller">
    <children>
       <HBox layoutX="5.0" layoutY="13.0" spacing="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0">
          <children>
@@ -35,25 +33,33 @@
                   <Insets />
                </HBox.margin>
             </VBox>
-            <ListView fx:id="rightList" layoutX="372.0" layoutY="104.0" minWidth="20.0" prefHeight="260.0" prefWidth="240.0" HBox.hgrow="ALWAYS">
-               <contextMenu>
-                  <ContextMenu>
-                    <items>
-                        <Menu mnemonicParsing="false" text="%CISortByFileName">
+            <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+               <children>
+                  <ListView fx:id="rightList" minWidth="20.0" prefHeight="260.0" prefWidth="240.0">
+                     <contextMenu>
+                        <ContextMenu>
                           <items>
-                            <MenuItem mnemonicParsing="false" onAction="#sortAsc" text="%CIAscending" />
-                            <MenuItem mnemonicParsing="false" onAction="#sortDesc" text="%CIDescending" />
+                              <Menu mnemonicParsing="false" text="%CISortByFileName">
+                                <items>
+                                  <MenuItem mnemonicParsing="false" onAction="#sortAsc" text="%CIAscending" />
+                                  <MenuItem mnemonicParsing="false" onAction="#sortDesc" text="%CIDescending" />
+                                </items>
+                              </Menu>
+                              <SeparatorMenuItem mnemonicParsing="false" />
+                              <MenuItem mnemonicParsing="false" onAction="#removeAll" text="%CIRemoveAll" />
                           </items>
-                        </Menu>
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#removeAll" text="%CIRemoveAll" />
-                    </items>
-                  </ContextMenu>
-               </contextMenu>
-            </ListView>
+                        </ContextMenu>
+                     </contextMenu>
+                  </ListView>
+                  <Button fx:id="btnGenerate" disable="true" mnemonicParsing="false" onAction="#nextMode" text="%BtGenerate">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin></Button>
+               </children>
+            </VBox>
          </children>
       </HBox>
-    <TitledPane animated="false" collapsible="false" expanded="true" layoutX="109.0" layoutY="358.0" prefHeight="223.0" prefWidth="599.0" text="%MPreviewSelectedImage" wrapText="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="350.0">
+    <TitledPane animated="false" collapsible="false" expanded="true" layoutX="109.0" layoutY="358.0" prefHeight="223.0" prefWidth="599.0" text="%MPreviewSelectedImage" wrapText="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="370.0">
          <content>
             <ImageView fx:id="imagePreview" fitHeight="223.0" fitWidth="646.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="97.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="545.0" AnchorPane.topAnchor="418.0" />
          </content>
