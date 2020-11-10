@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="640.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.polarbirds.gifcreator.image_selection.ImageSelectionController">
+    <children>
+        <HBox layoutX="5.0" layoutY="13.0" spacing="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+              AnchorPane.topAnchor="10.0">
+            <children>
+                <TextField fx:id="fieldPath" maxWidth="1.7976931348623157E308" prefHeight="25.0"
+                           promptText="%TFFolderPrompt" HBox.hgrow="ALWAYS"/>
+                <Button layoutX="141.0" layoutY="104.0" maxHeight="1.7976931348623157E308" minWidth="-Infinity"
+                        mnemonicParsing="false" onAction="#openBrowser" text="%BtBrowse"/>
+                <Button layoutX="227.0" layoutY="103.0" maxHeight="1.7976931348623157E308" minWidth="-Infinity"
+                        mnemonicParsing="false" onAction="#loadPath" text="%BtLoad"/>
+            </children>
+        </HBox>
+        <HBox alignment="CENTER" layoutX="35.0" layoutY="66.0" spacing="10.0" AnchorPane.leftAnchor="5.0"
+              AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="66.0">
+            <children>
+                <ListView fx:id="leftList" layoutX="34.0" layoutY="95.0" minWidth="20.0" onMouseReleased="#leftSelected"
+                          prefHeight="260.0" prefWidth="240.0" HBox.hgrow="ALWAYS"/>
+                <VBox layoutX="286.0" layoutY="140.0" maxHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                    <children>
+                        <Button layoutX="286.0" layoutY="140.0" maxWidth="1.7976931348623157E308"
+                                mnemonicParsing="false" onAction="#addSelection" text="%BtAdd"/>
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addAll"
+                                text="%BtAddAll"/>
+                        <Button layoutX="286.0" layoutY="177.0" maxWidth="1.7976931348623157E308"
+                                mnemonicParsing="false" onAction="#removeSelection" text="%BtRemove"/>
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveUp"
+                                text="%BtMoveUp">
+                            <VBox.margin>
+                                <Insets top="15.0"/>
+                            </VBox.margin>
+                        </Button>
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveDown"
+                                text="%BtMoveDown"/>
+                    </children>
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </VBox>
+                <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                    <children>
+                        <ListView fx:id="rightList" minWidth="20.0" prefHeight="260.0" prefWidth="240.0">
+                            <contextMenu>
+                                <ContextMenu>
+                                    <items>
+                                        <Menu mnemonicParsing="false" text="%CISortByFileName">
+                                            <items>
+                                                <MenuItem mnemonicParsing="false" onAction="#sortAsc"
+                                                          text="%CIAscending"/>
+                                                <MenuItem mnemonicParsing="false" onAction="#sortDesc"
+                                                          text="%CIDescending"/>
+                                            </items>
+                                        </Menu>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem mnemonicParsing="false" onAction="#removeAll" text="%CIRemoveAll"/>
+                                    </items>
+                                </ContextMenu>
+                            </contextMenu>
+                        </ListView>
+                        <Button fx:id="btnGenerate" disable="true" mnemonicParsing="false" onAction="#nextMode"
+                                text="%BtGenerate">
+                            <VBox.margin>
+                                <Insets top="10.0"/>
+                            </VBox.margin>
+                        </Button>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+        <TitledPane animated="false" collapsible="false" layoutX="109.0" layoutY="358.0" prefHeight="223.0"
+                    prefWidth="599.0" text="%MPreviewSelectedImage" wrapText="true" AnchorPane.bottomAnchor="5.0"
+                    AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="370.0">
+            <content>
+                <ImageView fx:id="imagePreview" fitHeight="223.0" fitWidth="646.0" pickOnBounds="true"
+                           preserveRatio="true" AnchorPane.bottomAnchor="97.0" AnchorPane.leftAnchor="11.0"
+                           AnchorPane.rightAnchor="545.0" AnchorPane.topAnchor="418.0"/>
+            </content>
+        </TitledPane>
+    </children>
+    <padding>
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+    </padding>
+</AnchorPane>

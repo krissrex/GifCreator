@@ -1,4 +1,4 @@
-package com.polarbirds.gifcreator;
+package com.polarbirds.gifcreator.javafx;
 
 import java.io.File;
 

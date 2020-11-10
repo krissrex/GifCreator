@@ -1,24 +1,18 @@
 package com.polarbirds.gifcreator;
 
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker.State;
+import javafx.scene.image.Image;
+import net.kroo.elliot.GifSequenceWriter;
+
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
-
-import com.polarbirds.gifcreator.ThreadActionEvent.Action;
-
-import net.kroo.elliot.GifSequenceWriter;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.concurrent.Worker.State;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
-import javafx.scene.image.Image;
 
 public class ImageCombiner {
 	
@@ -28,20 +22,20 @@ public class ImageCombiner {
 	
 	private int delay = 1;
 	
-	private List<ThreadActionCompleteListener> listeners;
+	private List<OnImageCombineCompleteListener> listeners;
 	private List<Task<Void>> generators;
 
 	public ImageCombiner() {
-		listeners = new ArrayList<ThreadActionCompleteListener>();
-		images = new ArrayList<BufferedImage>();
-		generators = new ArrayList<Task<Void>>();
+		listeners = new ArrayList<>();
+		images = new ArrayList<>();
+		generators = new ArrayList<>();
 	}
 	
-	public void addListener(ThreadActionCompleteListener listener) {
+	public void addListener(OnImageCombineCompleteListener listener) {
 		listeners.add(listener);
 	}
 	
-	public void removeListener(ThreadActionCompleteListener listener) {
+	public void removeListener(OnImageCombineCompleteListener listener) {
 		listeners.remove(listener);
 	}
 	
@@ -58,7 +52,7 @@ public class ImageCombiner {
 	}
 	/**
 	 * Sets the images to generate the gif from. The order is important.
-	 * @param files
+	 * @param images
 	 */
 	public void setImages(BufferedImage[] images) {
 		this.images.clear();
@@ -74,8 +68,8 @@ public class ImageCombiner {
 	public void generate() {
 		if (images.size() == 0) {
 			gif = null;
-			for (ThreadActionCompleteListener listener : listeners) {
-				listener.actionComplete(new ThreadActionEvent(Action.GIF_GENERATED, false));
+			for (final OnImageCombineCompleteListener listener : listeners) {
+				listener.onComplete(false);
 			}
 			return;
 		}
@@ -125,13 +119,9 @@ public class ImageCombiner {
 			
 		};
 		
-		generateTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-			@Override
-			public void handle(WorkerStateEvent event) {
-				for (ThreadActionCompleteListener listener : listeners) {
-					listener.actionComplete(new ThreadActionEvent(Action.GIF_GENERATED, true));
-				}
+		generateTask.setOnSucceeded(workerStateEvent -> {
+			for (final OnImageCombineCompleteListener listener : listeners) {
+				listener.onComplete(true);
 			}
 		});
 		
@@ -164,5 +154,10 @@ public class ImageCombiner {
 	
 	public int getDelay() {
 		return delay;
+	}
+
+	@FunctionalInterface
+	public interface OnImageCombineCompleteListener {
+		void onComplete(boolean success);
 	}
 }

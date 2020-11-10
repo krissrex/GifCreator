@@ -1,87 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.media.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.*?>
-<?import java.lang.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="410.0" prefWidth="697.0" style="-fx-background-color: #90B8EF;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.polarbirds.gifcreator.Controller">
-   <opaqueInsets>
-      <Insets />
-   </opaqueInsets>
-  <padding>
-      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-   </padding>
-   <center>
-      <Pane prefHeight="380.0" prefWidth="697.0" BorderPane.alignment="CENTER">
-         <children>
-            <Pane fx:id="loadPane" prefHeight="380.0" prefWidth="697.0">
-               <children>
-                  <TextField fx:id="fieldPath" layoutX="14.0" layoutY="13.0" prefHeight="25.0" prefWidth="512.0" promptText="Image folder" text="/" />
-                  <Button layoutX="546.0" layoutY="13.0" mnemonicParsing="false" onAction="#openBrowser" text="Browse..." />
-                  <ListView fx:id="leftList" layoutX="14.0" layoutY="101.0" onKeyPressed="#leftSelected" onMouseClicked="#leftSelected" prefHeight="240.0" prefWidth="240.0">
-                     <tooltip>
-                        <Tooltip fx:id="leftTooltip" height="300.0" text="Preview selected image" width="300.0">
-                           <graphic>
-                              <ImageView fx:id="imagePreview" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                        </Tooltip>
-                     </tooltip>
-                  </ListView>
-                  <ListView fx:id="rightList" layoutX="376.0" layoutY="101.0" prefHeight="240.0" prefWidth="240.0" />
-                  <Button layoutX="270.0" layoutY="153.0" mnemonicParsing="false" onAction="#addSelection" prefHeight="25.0" prefWidth="90.0" text="Add &gt;" />
-                  <Button layoutX="270.0" layoutY="196.0" mnemonicParsing="false" onAction="#removeSelection" prefHeight="25.0" prefWidth="90.0" text="&lt; Remove" />
-                  <Button fx:id="btnGenerate" disable="true" layoutX="258.0" layoutY="316.0" mnemonicParsing="false" onAction="#nextMode" text="Generate Gif..." />
-                  <Button layoutX="633.0" layoutY="13.0" mnemonicParsing="false" onAction="#loadPath" text="Load" />
-                  <Button layoutX="628.0" layoutY="153.0" mnemonicParsing="false" onAction="#moveUp" prefHeight="25.0" prefWidth="55.0" text="Up" />
-                  <Button layoutX="628.0" layoutY="196.0" mnemonicParsing="false" onAction="#moveDown" prefHeight="25.0" prefWidth="55.0" text="Down" />
-               </children>
-            </Pane>
-            <Pane fx:id="generatePane" layoutY="390.0" prefHeight="380.0" prefWidth="697.0">
-               <children>
-                  <Pane layoutX="20.0" layoutY="14.0" style="-fx-background-color: #42ED6D;">
-                     <children>
-                        <ImageView fx:id="gifPreview" fitHeight="353.0" fitWidth="361.0" pickOnBounds="true">
-                           <viewport>
-                              <Rectangle2D height="353.0" width="361.0" />
-                           </viewport>
-                        </ImageView>
-                        <Label fx:id="loadingLabel" layoutX="163.0" layoutY="147.0" text="Loading..." />
-                     </children>
-                  </Pane>
-                  <Label layoutX="463.0" layoutY="13.0" text="Set the delay" />
-                  <Slider fx:id="delaySlider" blockIncrement="5.0" layoutX="386.0" layoutY="79.0" majorTickUnit="100.0" max="1000.0" min="1.0" minorTickCount="1" onMouseReleased="#sliderReleased" prefHeight="22.0" prefWidth="239.0" showTickMarks="true" value="60.0" />
-                  <Button layoutX="507.0" layoutY="262.0" mnemonicParsing="false" onAction="#saveGif" text="Save..." />
-                  <Button layoutX="443.0" layoutY="262.0" mnemonicParsing="false" onAction="#prevMode" text="Back" />
-                  <TextField fx:id="delayField" layoutX="389.0" layoutY="110.0" prefHeight="25.0" prefWidth="153.0" />
-                  <Label layoutX="550.0" layoutY="116.0" text="seconds" />
-               </children>
-            </Pane>
-         </children>
-      </Pane>
-   </center>
-   <top>
-      <GridPane BorderPane.alignment="CENTER">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="316.0" minWidth="10.0" prefWidth="276.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="476.0" minWidth="10.0" prefWidth="354.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Label text="GifCreator">
-               <font>
-                  <Font size="28.0" />
-               </font>
-            </Label>
-            <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="Select files" GridPane.columnIndex="1" />
-         </children>
-      </GridPane>
-   </top>
+<!-- Deprecated. Split into image_selection and gif_settings instead.-->
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="410.0"
+            prefWidth="697.0" style="-fx-background-color: #90B8EF;" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.polarbirds.gifcreator.image_selection.ImageSelectionController">
+    <opaqueInsets>
+        <Insets/>
+    </opaqueInsets>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+    </padding>
+    <center>
+        <Pane prefHeight="380.0" prefWidth="697.0" BorderPane.alignment="CENTER">
+            <children>
+                <Pane fx:id="loadPane" prefHeight="380.0" prefWidth="697.0">
+                    <children>
+                        <TextField fx:id="fieldPath" layoutX="14.0" layoutY="13.0" prefHeight="25.0" prefWidth="512.0"
+                                   promptText="Image folder" text="/"/>
+                        <Button layoutX="546.0" layoutY="13.0" mnemonicParsing="false" onAction="#openBrowser"
+                                text="Browse..."/>
+                        <ListView fx:id="leftList" layoutX="14.0" layoutY="101.0" onKeyPressed="#leftSelected"
+                                  onMouseClicked="#leftSelected" prefHeight="240.0" prefWidth="240.0">
+                            <tooltip>
+                                <Tooltip fx:id="leftTooltip" height="300.0" text="Preview selected image" width="300.0">
+                                    <graphic>
+                                        <ImageView fx:id="imagePreview" fitHeight="300.0" fitWidth="300.0"
+                                                   pickOnBounds="true" preserveRatio="true"/>
+                                    </graphic>
+                                </Tooltip>
+                            </tooltip>
+                        </ListView>
+                        <ListView fx:id="rightList" layoutX="376.0" layoutY="101.0" prefHeight="240.0"
+                                  prefWidth="240.0"/>
+                        <Button layoutX="270.0" layoutY="153.0" mnemonicParsing="false" onAction="#addSelection"
+                                prefHeight="25.0" prefWidth="90.0" text="Add &gt;"/>
+                        <Button layoutX="270.0" layoutY="196.0" mnemonicParsing="false" onAction="#removeSelection"
+                                prefHeight="25.0" prefWidth="90.0" text="&lt; Remove"/>
+                        <Button fx:id="btnGenerate" disable="true" layoutX="258.0" layoutY="316.0"
+                                mnemonicParsing="false" onAction="#nextMode" text="Generate Gif..."/>
+                        <Button layoutX="633.0" layoutY="13.0" mnemonicParsing="false" onAction="#loadPath"
+                                text="Load"/>
+                        <Button layoutX="628.0" layoutY="153.0" mnemonicParsing="false" onAction="#moveUp"
+                                prefHeight="25.0" prefWidth="55.0" text="Up"/>
+                        <Button layoutX="628.0" layoutY="196.0" mnemonicParsing="false" onAction="#moveDown"
+                                prefHeight="25.0" prefWidth="55.0" text="Down"/>
+                    </children>
+                </Pane>
+                <Pane fx:id="generatePane" layoutY="390.0" prefHeight="380.0" prefWidth="697.0">
+                    <children>
+                        <Pane layoutX="20.0" layoutY="14.0" style="-fx-background-color: #42ED6D;">
+                            <children>
+                                <ImageView fx:id="gifPreview" fitHeight="353.0" fitWidth="361.0" pickOnBounds="true">
+                                    <viewport>
+                                        <Rectangle2D height="353.0" width="361.0"/>
+                                    </viewport>
+                                </ImageView>
+                                <Label fx:id="loadingLabel" layoutX="163.0" layoutY="147.0" text="Loading..."/>
+                            </children>
+                        </Pane>
+                        <Label layoutX="463.0" layoutY="13.0" text="Set the delay"/>
+                        <Slider fx:id="delaySlider" blockIncrement="5.0" layoutX="386.0" layoutY="79.0"
+                                majorTickUnit="100.0" max="1000.0" min="1.0" minorTickCount="1"
+                                onMouseReleased="#sliderReleased" prefHeight="22.0" prefWidth="239.0"
+                                showTickMarks="true" value="60.0"/>
+                        <Button layoutX="507.0" layoutY="262.0" mnemonicParsing="false" onAction="#saveGif"
+                                text="Save..."/>
+                        <Button layoutX="443.0" layoutY="262.0" mnemonicParsing="false" onAction="#prevMode"
+                                text="Back"/>
+                        <TextField fx:id="delayField" layoutX="389.0" layoutY="110.0" prefHeight="25.0"
+                                   prefWidth="153.0"/>
+                        <Label layoutX="550.0" layoutY="116.0" text="seconds"/>
+                    </children>
+                </Pane>
+            </children>
+        </Pane>
+    </center>
+    <top>
+        <GridPane BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="316.0" minWidth="10.0" prefWidth="276.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="476.0" minWidth="10.0" prefWidth="354.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <children>
+                <Label text="GifCreator">
+                    <font>
+                        <Font size="28.0"/>
+                    </font>
+                </Label>
+                <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="Select files"
+                      GridPane.columnIndex="1"/>
+            </children>
+        </GridPane>
+    </top>
 </BorderPane>

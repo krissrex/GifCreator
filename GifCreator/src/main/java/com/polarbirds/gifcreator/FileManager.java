@@ -1,52 +1,43 @@
 package com.polarbirds.gifcreator;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
-
-import com.polarbirds.gifcreator.ThreadActionEvent.Action;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker.State;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
+
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 /**
- * 
+ * Manages what image files are selected by the user.
+ *
  * @author Kristian
  * WIP.
  */
 public class FileManager {
-	
-	private File path;
+
+	@Nullable
+	private File path = null;
 	private final List<BufferedImage> images;
 	private final Map<File, AnimationFrame> imagesMap;
-	private ObservableList<File> allFiles;
-	private ObservableList<File> selectedFiles;
+	private final ObservableList<File> allFiles;
+	private final ObservableList<File> selectedFiles;
 	
-	private final List<ThreadActionCompleteListener> listeners;
-	private List<Task<Void>> loaders;
+	private final List<OnLoadCompleteListener> listeners;
+	private final List<Task<Void>> loaders;
 	
 	public FileManager() {
-		listeners = new ArrayList<ThreadActionCompleteListener>();
-		images = new ArrayList<BufferedImage>();
-		imagesMap = new HashMap<File, AnimationFrame>();
-		loaders = new ArrayList<Task<Void>>();
+		listeners = new ArrayList<>();
+		images = new ArrayList<>();
+		imagesMap = new HashMap<>();
+		loaders = new ArrayList<>();
 		
 		allFiles = FXCollections.observableArrayList();
 		selectedFiles = FXCollections.observableArrayList();
@@ -55,7 +46,11 @@ public class FileManager {
 	public void setPath(File path) {
 		this.path = path;
 	}
-	
+
+	/**
+	 * @return the currently active path
+	 */
+	@Nullable
 	public File getPath() {
 		return path; 
 	}
@@ -122,38 +117,33 @@ public class FileManager {
 	}
 	
 	public void sort(boolean ascending) {
-		FXCollections.sort(selectedFiles, new  Comparator<File>() {
-
-			@Override
-			public int compare(File o1, File o2) {
-				int order = ascending? 1 : -1;
-				
-				return order * o1.getName().compareTo(o2.getName());
-			}
-			
+		FXCollections.sort(selectedFiles, (fileA, fileB) -> {
+			int order = ascending? 1 : -1;
+			return order * fileA.getName().compareTo(fileB.getName());
 		});
 	}
 	
 	public void loadPath() {
-		File[] files = getPath().listFiles(
-				new FilenameFilter() {
-					@Override
-					public boolean accept(File dir, String name) {
-						String[] extensions = ImageIO.getReaderFileSuffixes(); //Get an array containing "jpg", "bmp", "gif" etc.
-						for (String ext :extensions) {
-							if (name.endsWith(ext)) {
-								//Add image extensions as accepted file types.
-								return true;
-							}
+		if (path == null) {
+			return;
+		}
+
+		final String[] imageExtensions = ImageIO.getReaderFileSuffixes(); //Get an array containing "jpg", "bmp", "gif" etc.
+		File[] files = path.listFiles(
+				(dir, name) -> {
+					for (final String ext : imageExtensions) {
+						if (name.endsWith(ext)) {
+							//Add image extensions as accepted file types.
+							return true;
 						}
-						return false;
 					}
+					return false;
 				});
 		
 		if (allFiles != null) {
 			allFiles.clear();
-			for (File image : files) {
-				allFiles.add(image);
+			if (files != null) {
+				Collections.addAll(allFiles, files);
 			}
 		}
 	}
@@ -166,16 +156,13 @@ public class FileManager {
 			files[i] = new File(selectedFiles.get(i).getPath());
 		}
 		final BufferedImage[] temp = new BufferedImage[files.length];
-		
-		///////////////////////////////////////////7
-		
-		
+
 		
 		//Create task
 		Task<Void> loadTask = new Task<Void>() {
 			
 			@Override
-			protected Void call() throws Exception {
+			protected Void call() {
 				int i = 0;
 				
 				for (File image : files) {
@@ -190,7 +177,9 @@ public class FileManager {
 							temp[i] = ImageIO.read(image);
 							imagesMap.put(image, new AnimationFrame(temp[i]));
 						}
-					} catch (Exception e) {}
+					} catch (Exception e) {
+						System.err.println("Failed to load image " + image);
+					}
 					finally {
 						i++;
 					}
@@ -201,32 +190,27 @@ public class FileManager {
 		}; 
 		
 		//Set action to perform on success
-		//inb4 "use lamba u filthy skrub"
-		loadTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				
-				images.clear();
-				for (BufferedImage image : temp) {
-					images.add(image);
+		loadTask.setOnSucceeded(workerStateEvent -> {
+			images.clear();
+			for (BufferedImage image : temp) {
+				images.add(image);
+			}
+
+			//Don't store more than 15 spare images.
+			int sizeLimit = 15+images.size();
+
+			if (imagesMap.size() > sizeLimit) {
+				Set<File> keys = imagesMap.keySet();
+				keys.removeAll(selectedFiles);
+
+				Iterator<File> iter = keys.iterator();
+				while(iter.hasNext() && imagesMap.size() > sizeLimit) {
+					imagesMap.remove(iter.next());
 				}
-				
-				//Don't store more than 15 spare images.
-				int sizeLimit = 15+images.size();
-				
-				if (imagesMap.size() > sizeLimit) {
-					Set<File> keys = imagesMap.keySet();
-					keys.removeAll(selectedFiles);
-					
-					Iterator<File> iter = keys.iterator();
-					while(iter.hasNext() && imagesMap.size() > sizeLimit) {
-						imagesMap.remove(iter.next());
-					}
-				}
-				
-				for (ThreadActionCompleteListener listener : listeners) {
-					listener.actionComplete(new ThreadActionEvent(Action.FILES_LOADED));
-				}
+			}
+
+			for (OnLoadCompleteListener listener : listeners) {
+				listener.onFileLoadComplete();
 			}
 		});
 		
@@ -234,7 +218,7 @@ public class FileManager {
 		
 		//Run task
 		Thread loadThread = new Thread(null, loadTask, "ImageLoader");
-		loadThread.setDaemon(true); //Not sure what happens on false.
+		loadThread.setDaemon(true); // true -> program may exit if main tread exits while the loading thread still lives
 		loadThread.start();
 	}
 	
@@ -278,30 +262,30 @@ public class FileManager {
 		return frame;
 	}
 	
-	public void addListener(ThreadActionCompleteListener listener) {
+	public void addListener(OnLoadCompleteListener listener) {
 		listeners.add(listener);
 	}
 	
-	public void removeListener(ThreadActionCompleteListener listener) {
+	public void removeListener(OnLoadCompleteListener listener) {
 		listeners.remove(listener);
 	}
 	
 	public void saveGif(byte[] imageByteArray, File file) {
 		ImageOutputStream a;
-		
-		
+
 		try {
 			System.out.println("Writing gif...");
 			a = ImageIO.createImageOutputStream(new FileOutputStream(file));
 			a.write(imageByteArray);
 			System.out.println("Done writing gif. Stream pos: "+a.getStreamPosition());
 			a.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
+	}
+
+	@FunctionalInterface
+	public interface OnLoadCompleteListener {
+		void onFileLoadComplete();
 	}
 }
