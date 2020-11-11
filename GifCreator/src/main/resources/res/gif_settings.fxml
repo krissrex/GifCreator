@@ -5,7 +5,8 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.polarbirds.gifcreator.gif_settings.GifSettingsController">
+<AnchorPane prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.polarbirds.gifcreator.gif_settings.GifSettingsController">
 
     <Pane prefHeight="380.0" prefWidth="697.0">
         <children>
@@ -13,18 +14,20 @@
                 <children>
                     <ImageView fx:id="gifPreview" fitHeight="353.0" fitWidth="361.0" pickOnBounds="true">
                         <viewport>
-                            <Rectangle2D height="353.0" width="361.0" />
+                            <Rectangle2D height="353.0" width="361.0"/>
                         </viewport>
                     </ImageView>
-                    <Label fx:id="loadingLabel" layoutX="163.0" layoutY="147.0" text="%LbLoading" />
+                    <Label fx:id="loadingLabel" layoutX="163.0" layoutY="147.0" text="%LbLoading"/>
                 </children>
             </Pane>
-            <Label layoutX="463.0" layoutY="13.0" text="Set the delay" />
-            <Slider fx:id="delaySlider" blockIncrement="5.0" layoutX="386.0" layoutY="79.0" majorTickUnit="100.0" max="1000.0" min="1.0" minorTickCount="1" onMouseReleased="#sliderReleased" prefHeight="22.0" prefWidth="239.0" showTickMarks="true" value="60.0" />
-            <Button layoutX="507.0" layoutY="262.0" mnemonicParsing="false" onAction="#saveGif" text="Save..." />
-            <Button layoutX="443.0" layoutY="262.0" mnemonicParsing="false" onAction="#prevMode" text="Back" />
-            <TextField fx:id="delayField" layoutX="389.0" layoutY="110.0" prefHeight="25.0" prefWidth="153.0" />
-            <Label layoutX="550.0" layoutY="116.0" text="seconds" />
+            <Label layoutX="463.0" layoutY="13.0" text="%LbSetDelay"/>
+            <Slider fx:id="delaySlider" blockIncrement="5.0" layoutX="386.0" layoutY="79.0" majorTickUnit="100.0"
+                    max="1000.0" min="1.0" minorTickCount="1" onMouseReleased="#sliderReleased" prefHeight="22.0"
+                    prefWidth="239.0" showTickMarks="true" value="60.0"/>
+            <Button layoutX="507.0" layoutY="262.0" mnemonicParsing="false" onAction="#saveGif" text="%BtSave"/>
+            <Button layoutX="443.0" layoutY="262.0" mnemonicParsing="false" onAction="#prevMode" text="%BtBack"/>
+            <TextField fx:id="delayField" layoutX="389.0" layoutY="110.0" prefHeight="25.0" prefWidth="153.0"/>
+            <Label layoutX="550.0" layoutY="116.0" text="%LbSeconds"/>
         </children>
     </Pane>
 </AnchorPane>
