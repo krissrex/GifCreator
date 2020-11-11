@@ -113,7 +113,7 @@ public class GifSettingsController implements Initializable, Disposable, JavaFxC
         }
 
         chooser.setTitle("Save the gif...");
-        chooser.getExtensionFilters().setAll(new FileChooser.ExtensionFilter("Gif", "gif"));
+        chooser.getExtensionFilters().setAll(new FileChooser.ExtensionFilter("Gif", "*.gif"));
 
         File file = chooser.showSaveDialog(stage);
         if (file == null) {
