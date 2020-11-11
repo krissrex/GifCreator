@@ -74,8 +74,11 @@ public class ImageSelectionController implements JavaFxController, Initializable
 
         leftList.setCellFactory(fileListView -> new FileNameCell());
 
-        this.fileListChangeListener = change -> this.toggleGenerateButton();
-        fm.getSelectedFilesList().addListener(fileListChangeListener);
+        this.fileListChangeListener = change -> {
+            btnGenerate.setDisable(change.getList().isEmpty());
+        };
+        fm.getSelectedFilesList().addListener(this.fileListChangeListener);
+        btnGenerate.setDisable(fm.getSelectedFilesList().isEmpty());
     }
 
     @Override
@@ -205,15 +208,6 @@ public class ImageSelectionController implements JavaFxController, Initializable
 /////////////////////////////////Methods/////////////////////////////////////
 //UTILITY
 
-
-
-    public void toggleGenerateButton() {
-        if (rightList.getItems().size() == 0) {
-            btnGenerate.setDisable(true);
-        } else {
-            btnGenerate.setDisable(false);
-        }
-    }
 
     /**
      * Loads strings from <code>resources</code> and saves it to private strings.
