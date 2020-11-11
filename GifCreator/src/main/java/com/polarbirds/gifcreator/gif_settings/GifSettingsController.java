@@ -3,10 +3,13 @@ package com.polarbirds.gifcreator.gif_settings;
 import com.polarbirds.gifcreator.*;
 import com.polarbirds.gifcreator.javafx.Disposable;
 import com.polarbirds.gifcreator.javafx.JavaFxController;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -34,6 +37,7 @@ public class GifSettingsController implements Initializable, Disposable, JavaFxC
     public Slider delaySlider;
     @FXML
     public TextField delayField;
+    @FXML public Button btnSave;
 
     private final ImageCombiner ic;
     private final FileManager fm;
@@ -41,6 +45,8 @@ public class GifSettingsController implements Initializable, Disposable, JavaFxC
     private FileManager.OnLoadCompleteListener onLoadCompleteListener;
     private ImageCombiner.OnImageCombineCompleteListener onImageCombineCompleteListener;
     private Stage stage;
+
+    private BooleanProperty gifIsReady = new SimpleBooleanProperty(false);
 
     public GifSettingsController() {
         SharedState state = SharedState.getInstance();
@@ -52,26 +58,27 @@ public class GifSettingsController implements Initializable, Disposable, JavaFxC
     public void initialize(URL location, ResourceBundle resources) {
         this.onLoadCompleteListener = () -> {
             System.out.println("" + fm.getImages().length + " files loaded.");
-            loadingLabel.setVisible(true);
+            gifIsReady.setValue(false);
             ic.setImages(fm.getImages());
             ic.generate();
         };
         fm.addListener(this.onLoadCompleteListener);
 
         this.onImageCombineCompleteListener = (success) -> {
-            loadingLabel.setVisible(false);
             if (success) {
                 System.out.println("Gif generated.");
                 gifPreview.setImage(ic.getGif());
+                gifIsReady.setValue(true);
             } else {
                 System.err.println("Gif generation failed.");
-
             }
         };
         ic.addListener(this.onImageCombineCompleteListener);
 
         delaySliderChanged();
         delaySlider.valueProperty().addListener((observable, oldValue, newValue) -> delaySliderChanged());
+        btnSave.disableProperty().bind(gifIsReady.not());
+        loadingLabel.visibleProperty().bind(gifIsReady.not());
 
         fm.loadImages();
     }
@@ -90,7 +97,7 @@ public class GifSettingsController implements Initializable, Disposable, JavaFxC
     @FXML
     public void sliderReleased(MouseEvent mouseEvent) {
         System.out.println("Slider released. Generating gif...");
-        loadingLabel.setVisible(true);
+        gifIsReady.setValue(false);
         delaySliderChanged();
         ic.cancelGeneration();
         ic.generate();

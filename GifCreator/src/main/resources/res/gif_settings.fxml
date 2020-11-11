@@ -18,7 +18,7 @@
             </Pane>
             <Label layoutX="389.0" layoutY="14.0" text="%LbSetDelay" />
             <Slider fx:id="delaySlider" blockIncrement="5.0" layoutX="389.0" layoutY="42.0" majorTickUnit="100.0" max="1000.0" min="1.0" minorTickCount="1" onMouseReleased="#sliderReleased" prefHeight="22.0" prefWidth="239.0" showTickMarks="true" value="60.0" />
-            <Button layoutX="621.0" layoutY="341.0" mnemonicParsing="false" onAction="#saveGif" text="%BtSave" />
+            <Button fx:id="btnSave" layoutX="621.0" layoutY="341.0" mnemonicParsing="false" onAction="#saveGif" text="%BtSave" />
             <Button layoutX="542.0" layoutY="341.0" mnemonicParsing="false" onAction="#prevMode" text="%BtBack" />
             <TextField fx:id="delayField" layoutX="389.0" layoutY="73.0" prefHeight="25.0" prefWidth="153.0" />
             <Label layoutX="561.0" layoutY="77.0" text="%LbSeconds" />
